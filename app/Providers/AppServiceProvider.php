@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Agency;
+use App\Modules\Agencies\Policies\AgencyPolicy;
+use App\Modules\Agencies\Repositories\AgencyRepositoryInterface;
+use App\Modules\Agencies\Repositories\EloquentAgencyRepository;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(AgencyRepositoryInterface::class, EloquentAgencyRepository::class);
     }
 
     /**
@@ -19,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::policy(Agency::class, AgencyPolicy::class);
     }
 }
