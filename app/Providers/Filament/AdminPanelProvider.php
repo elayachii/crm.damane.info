@@ -2,8 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Auth\Login;
-use App\Http\Middleware\FilamentAuthenticate;
+use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -28,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName('AgentFlow CRM')
-            ->login(Login::class)
+            ->login()
             ->colors([
                 'primary' => Color::Blue,
             ])
@@ -53,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                FilamentAuthenticate::class,
+                Authenticate::class,
             ]);
     }
 }
