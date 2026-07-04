@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Http\Responses\Auth\FilamentLoginResponse;
 use App\Models\Agency;
 use App\Modules\Agencies\Policies\AgencyPolicy;
 use App\Modules\Agencies\Repositories\AgencyRepositoryInterface;
 use App\Modules\Agencies\Repositories\EloquentAgencyRepository;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(AgencyRepositoryInterface::class, EloquentAgencyRepository::class);
+        $this->app->bind(LoginResponse::class, FilamentLoginResponse::class);
     }
 
     /**
