@@ -37,6 +37,13 @@ DB_DATABASE=agentflow
 DB_USERNAME=damaninfo
 # DB_PASSWORD must be configured manually on the production server.
 DB_PASSWORD=
+
+SESSION_DRIVER=database
+SESSION_COOKIE=agentflow_crm_session
+SESSION_DOMAIN=crm.rebrandapps.us
+SESSION_SECURE_COOKIE=true
+SESSION_HTTP_ONLY=true
+SESSION_SAME_SITE=lax
 ```
 
 The production database password must be configured directly on the VPS. Never commit real production secrets to Git.
@@ -105,6 +112,29 @@ php artisan about
 ```
 
 Confirm that the environment is `production`, debug mode is disabled, and the database connection is `mysql`.
+
+## Filament Login Session Requirements
+
+Filament uses Laravel's session guard for `/admin/login`. If the login form accepts the password but redirects back to `/admin/login` without a validation error, the browser is usually not sending the authenticated session cookie back after the login redirect.
+
+For production, keep these values active in `.env`:
+
+```dotenv
+SESSION_DRIVER=database
+SESSION_COOKIE=agentflow_crm_session
+SESSION_DOMAIN=crm.rebrandapps.us
+SESSION_SECURE_COOKIE=true
+SESSION_HTTP_ONLY=true
+SESSION_SAME_SITE=lax
+```
+
+After changing any session or auth environment value, clear and rebuild the configuration cache:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+php artisan config:cache
+```
 
 ## File Permissions
 
