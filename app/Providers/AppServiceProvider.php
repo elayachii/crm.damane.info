@@ -7,6 +7,7 @@ use App\Models\Agency;
 use App\Modules\Agencies\Policies\AgencyPolicy;
 use App\Modules\Agencies\Repositories\AgencyRepositoryInterface;
 use App\Modules\Agencies\Repositories\EloquentAgencyRepository;
+use App\Support\AuthFlowTrace;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(AgencyRepositoryInterface::class, EloquentAgencyRepository::class);
         $this->app->bind(LoginResponse::class, FilamentLoginResponse::class);
+
+        AuthFlowTrace::info('app_service_provider.register_bindings', [
+            'login_response' => FilamentLoginResponse::class,
+        ]);
     }
 
     /**
@@ -28,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Agency::class, AgencyPolicy::class);
+
+        AuthFlowTrace::info('app_service_provider.boot', [
+            'agency_policy' => AgencyPolicy::class,
+        ]);
     }
 }

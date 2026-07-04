@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Concerns\HasUuid;
+use App\Support\AuthFlowTrace;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -35,9 +36,26 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->agency()
+        AuthFlowTrace::info('user.can_access_panel.before', [
+            'panel_id' => $panel->getId(),
+            'user_id' => $this->getKey(),
+            'user_auth_identifier' => $this->getAuthIdentifier(),
+            'agency_id' => $this->agency_id,
+        ]);
+
+        $canAccess = $this->agency()
             ->where('is_active', true)
             ->exists();
+
+        AuthFlowTrace::info('user.can_access_panel.after', [
+            'panel_id' => $panel->getId(),
+            'user_id' => $this->getKey(),
+            'user_auth_identifier' => $this->getAuthIdentifier(),
+            'agency_id' => $this->agency_id,
+            'can_access' => $canAccess,
+        ]);
+
+        return $canAccess;
     }
 
     /**
