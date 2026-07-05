@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'username',
     'email',
     'phone',
+    'national_id',
     'country',
     'language',
     'notes',
@@ -96,6 +97,14 @@ class Customer extends Model
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    /**
+     * @return HasMany<Transaction>
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 
     /**

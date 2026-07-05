@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\Subscription;
 use App\Models\Ticket;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Modules\Agencies\Policies\AgencyPolicy;
 use App\Modules\Agencies\Repositories\AgencyRepositoryInterface;
@@ -20,6 +21,7 @@ use App\Modules\Payments\Policies\PaymentPolicy;
 use App\Modules\Settings\Policies\SettingPolicy;
 use App\Modules\Subscriptions\Policies\SubscriptionPolicy;
 use App\Modules\Tickets\Policies\TicketPolicy;
+use App\Modules\Transactions\Policies\TransactionPolicy;
 use App\Modules\Users\Policies\UserPolicy;
 use App\Policies\RolePolicy;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
@@ -54,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Setting::class, SettingPolicy::class);
         Gate::policy(Subscription::class, SubscriptionPolicy::class);
         Gate::policy(Ticket::class, TicketPolicy::class);
+        Gate::policy(Transaction::class, TransactionPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
     }

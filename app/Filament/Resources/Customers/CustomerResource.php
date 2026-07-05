@@ -62,6 +62,9 @@ class CustomerResource extends Resource
                             ->tel()
                             ->required()
                             ->maxLength(50),
+                        TextInput::make('national_id')
+                            ->label('National ID')
+                            ->maxLength(100),
                         TextInput::make('country')
                             ->required()
                             ->minLength(2)
@@ -99,6 +102,10 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->placeholder('-'),
+                TextColumn::make('national_id')
+                    ->label('National ID')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('country')
                     ->sortable(),
                 TextColumn::make('status')

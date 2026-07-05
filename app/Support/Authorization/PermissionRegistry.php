@@ -40,6 +40,7 @@ final class PermissionRegistry
             'applications',
             'devices',
             'subscriptions',
+            'transactions',
             'orders',
             'payments',
             'invoices',

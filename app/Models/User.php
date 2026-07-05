@@ -84,6 +84,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Ticket::class, 'created_by');
     }
 
+    /**
+     * @return HasMany<Transaction>
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isSuperAdmin() || $this->agency()
