@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\CustomerStatsOverview;
+use App\Filament\Widgets\InvoiceStatsOverview;
 use App\Filament\Widgets\PaymentStatsOverview;
 use App\Filament\Widgets\SubscriptionStatsOverview;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -44,6 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 CustomerStatsOverview::class,
+                InvoiceStatsOverview::class,
                 PaymentStatsOverview::class,
                 SubscriptionStatsOverview::class,
             ])

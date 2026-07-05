@@ -57,6 +57,17 @@ class PaymentResource extends Resource
                             ->searchable(['plan_name'])
                             ->preload()
                             ->required(),
+                        Select::make('invoice_id')
+                            ->label('Invoice')
+                            ->relationship(
+                                'invoice',
+                                'invoice_number',
+                                fn (Builder $query): Builder => PaymentTenantQuery::scopeInvoicesForUser($query, auth()->user())
+                                    ->with('customer'),
+                            )
+                            ->getOptionLabelFromRecordUsing(fn ($record): string => "{$record->invoice_number} - {$record->customer?->full_name}")
+                            ->searchable(['invoice_number'])
+                            ->preload(),
                         TextInput::make('amount')
                             ->numeric()
                             ->required()
@@ -157,7 +168,7 @@ class PaymentResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return PaymentTenantQuery::paymentsForUser(auth()->user())
-            ->with(['agency', 'customer', 'subscription']);
+            ->with(['agency', 'customer', 'invoice', 'subscription']);
     }
 
     /**

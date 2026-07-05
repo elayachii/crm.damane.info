@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Models\Concerns\HasUuid;
+use App\Modules\Invoices\Services\InvoicePaymentSyncService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'subscription_id',
+    'invoice_id',
     'customer_id',
     'agency_id',
     'amount',
@@ -32,9 +34,15 @@ class Payment extends Model
     use HasUuid;
     use SoftDeletes;
 
+    private ?int $previousInvoiceId = null;
+
     protected static function booted(): void
     {
         static::saving(static function (Payment $payment): void {
+            $payment->previousInvoiceId = $payment->exists && $payment->getOriginal('invoice_id') !== null
+                ? (int) $payment->getOriginal('invoice_id')
+                : null;
+
             if (blank($payment->subscription_id)) {
                 return;
             }
@@ -48,9 +56,29 @@ class Payment extends Model
                     throw new AuthorizationException('The selected subscription does not belong to your agency.');
                 }
 
+                if (! blank($payment->invoice_id)) {
+                    $invoice = Invoice::query()->find($payment->invoice_id);
+
+                    if ($invoice !== null && (int) $invoice->subscription_id !== (int) $subscription->id) {
+                        throw new AuthorizationException('The selected invoice does not match the subscription.');
+                    }
+                }
+
                 $payment->customer_id = $subscription->customer_id;
                 $payment->agency_id = $subscription->agency_id;
             }
+        });
+
+        static::saved(static function (Payment $payment): void {
+            $payment->syncInvoiceBalance();
+        });
+
+        static::deleted(static function (Payment $payment): void {
+            $payment->syncInvoiceBalance();
+        });
+
+        static::restored(static function (Payment $payment): void {
+            $payment->syncInvoiceBalance();
         });
     }
 
@@ -60,6 +88,14 @@ class Payment extends Model
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
+    }
+
+    /**
+     * @return BelongsTo<Invoice, Payment>
+     */
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
     }
 
     /**
@@ -76,6 +112,17 @@ class Payment extends Model
     public function agency(): BelongsTo
     {
         return $this->belongsTo(Agency::class);
+    }
+
+    private function syncInvoiceBalance(): void
+    {
+        foreach (array_unique(array_filter([$this->previousInvoiceId, $this->invoice_id])) as $invoiceId) {
+            $invoice = Invoice::query()->find($invoiceId);
+
+            if ($invoice !== null) {
+                app(InvoicePaymentSyncService::class)->sync($invoice);
+            }
+        }
     }
 
     /**

@@ -78,6 +78,14 @@ class Subscription extends Model
     }
 
     /**
+     * @return HasMany<Invoice>
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    /**
      * @return Attribute<int, never>
      */
     protected function remainingDays(): Attribute

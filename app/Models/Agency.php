@@ -61,6 +61,14 @@ class Agency extends Model
     }
 
     /**
+     * @return HasMany<Invoice>
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
