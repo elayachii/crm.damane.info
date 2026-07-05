@@ -69,6 +69,14 @@ class Agency extends Model
     }
 
     /**
+     * @return HasMany<Ticket>
+     */
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

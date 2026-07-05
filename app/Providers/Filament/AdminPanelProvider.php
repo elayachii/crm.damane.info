@@ -6,6 +6,7 @@ use App\Filament\Widgets\CustomerStatsOverview;
 use App\Filament\Widgets\InvoiceStatsOverview;
 use App\Filament\Widgets\PaymentStatsOverview;
 use App\Filament\Widgets\SubscriptionStatsOverview;
+use App\Filament\Widgets\TicketStatsOverview;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                 InvoiceStatsOverview::class,
                 PaymentStatsOverview::class,
                 SubscriptionStatsOverview::class,
+                TicketStatsOverview::class,
             ])
             ->plugin(
                 FilamentShieldPlugin::make()
