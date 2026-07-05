@@ -4,12 +4,16 @@ namespace App\Providers;
 
 use App\Http\Responses\Auth\FilamentLoginResponse;
 use App\Models\Agency;
+use App\Models\User;
 use App\Modules\Agencies\Policies\AgencyPolicy;
 use App\Modules\Agencies\Repositories\AgencyRepositoryInterface;
 use App\Modules\Agencies\Repositories\EloquentAgencyRepository;
+use App\Modules\Users\Policies\UserPolicy;
+use App\Policies\RolePolicy;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::before(static function (User $user): ?bool {
+            return $user->isSuperAdmin() ? true : null;
+        });
+
         Gate::policy(Agency::class, AgencyPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
     }
 }

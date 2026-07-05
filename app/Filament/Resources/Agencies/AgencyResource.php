@@ -7,6 +7,7 @@ namespace App\Filament\Resources\Agencies;
 use App\Filament\Resources\Agencies\Pages\EditAgency;
 use App\Filament\Resources\Agencies\Pages\ListAgencies;
 use App\Models\Agency;
+use App\Support\Authorization\PermissionRegistry;
 use BackedEnum;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
@@ -108,13 +109,20 @@ class AgencyResource extends Resource
     {
         $user = auth()->user();
 
+        if ($user?->isSuperAdmin()) {
+            return parent::getEloquentQuery();
+        }
+
         return parent::getEloquentQuery()
             ->whereKey($user?->agency_id ?? 0);
     }
 
     public static function canCreate(): bool
     {
-        return false;
+        $user = auth()->user();
+
+        return $user?->isSuperAdmin()
+            && $user->can(PermissionRegistry::for(PermissionRegistry::ACTION_CREATE, 'agencies'));
     }
 
     /**
