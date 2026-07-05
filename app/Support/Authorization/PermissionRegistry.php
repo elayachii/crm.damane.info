@@ -44,6 +44,7 @@ final class PermissionRegistry
             'payments',
             'invoices',
             'tickets',
+            'reports',
             'settings',
         ];
     }
