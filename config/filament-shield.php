@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Authorization\PermissionRegistry;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
@@ -95,7 +96,7 @@ return [
         ],
     ],
 
-    'custom_permissions' => [],
+    'custom_permissions' => PermissionRegistry::all(),
 
     'discovery' => [
         'discover_all_resources' => false,

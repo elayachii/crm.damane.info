@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Http\Responses\Auth\FilamentLoginResponse;
 use App\Models\Agency;
+use App\Models\Customer;
 use App\Models\User;
 use App\Modules\Agencies\Policies\AgencyPolicy;
 use App\Modules\Agencies\Repositories\AgencyRepositoryInterface;
 use App\Modules\Agencies\Repositories\EloquentAgencyRepository;
+use App\Modules\Customers\Policies\CustomerPolicy;
 use App\Modules\Users\Policies\UserPolicy;
 use App\Policies\RolePolicy;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::policy(Agency::class, AgencyPolicy::class);
+        Gate::policy(Customer::class, CustomerPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
     }

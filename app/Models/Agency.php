@@ -37,6 +37,14 @@ class Agency extends Model
     }
 
     /**
+     * @return HasMany<Customer>
+     */
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
